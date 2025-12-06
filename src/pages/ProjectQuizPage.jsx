@@ -107,7 +107,7 @@ function ProjectQuizPage() {
     setMessage('');
     generateQuestion();
   };
-  
+
   useEffect(() => {
     if (!loading && vocabList.length > 0) {
       generateQuestion();
@@ -143,7 +143,7 @@ function ProjectQuizPage() {
               <button className="btn btn-success btn-lg mt-3" onClick={handleRestart}>Main Lagi</button>
               <Link to={`/project/${projectId}/vocab`} className="btn btn-secondary btn-lg mt-3 ms-2">Kembali ke Projek</Link>
             </div>
-          ) : (
+          ) : currentQuestion ? ( // TAMBAHKAN PEMERIKSAAN currentQuestion DI SINI
             <form onSubmit={handleSubmitAnswer}>
               <h2 className="mb-4 text-center">
                 {questionType === 'english-to-indonesian' ? `${currentQuestion.english_word}?` : `${currentQuestion.indonesian_meaning}?`}
@@ -151,6 +151,8 @@ function ProjectQuizPage() {
               <input type="text" className="form-control form-control-lg text-center" value={userAnswer} onChange={(e) => setUserAnswer(e.target.value)} placeholder="Ketik jawaban Anda..." autoComplete="off" autoFocus />
               <button type="submit" className="btn btn-primary btn-lg mt-4 w-100">Jawab</button>
             </form>
+          ) : (
+            <div>Memuat soal...</div> // Tampilkan ini saat currentQuestion masih null
           )}
           {message && !gameWon && <div className="alert alert-info mt-4">{message}</div>}
           <Link to="/dashboard" className="btn btn-link mt-3">← Kembali ke Dashboard</Link>
