@@ -65,6 +65,11 @@ function Navbar() {
               </Link>
             </li>
             <li className="nav-item">
+              <Link className="nav-link" to="/settings">
+                <i className="bi bi-gear me-1"></i> Settings
+              </Link>
+            </li>
+            <li className="nav-item">
               <button className="btn btn-link nav-link" onClick={handleLogout}>
                 <i className="bi bi-box-arrow-right me-1"></i> Logout
               </button>

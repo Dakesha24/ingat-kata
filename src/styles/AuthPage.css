@@ -1,0 +1,107 @@
+/* Wrapper untuk seluruh halaman login */
+.login-wrapper {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  width: 100%;
+  padding: 20px;
+}
+
+/* Kartu utama untuk form login */
+.login-card {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  padding: 40px;
+  width: 100%;
+  max-width: 700px; /* Lebar maksimum yang lebih besar untuk laptop */
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+}
+
+/* Logo dan Judul */
+.login-logo {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 20px;
+}
+
+.login-title {
+  color: #333;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.login-subtitle {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 30px;
+}
+
+/* Form Input */
+.login-form .form-control {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 12px 15px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-form .form-control:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
+  background-color: #fff;
+}
+
+/* Tombol Login */
+.login-btn {
+  background-color: #667eea;
+  border-color: #667eea;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.login-btn:hover {
+  background-color: #5a6fd8;
+  transform: translateY(-2px);
+}
+
+/* Link ke Register */
+.login-link {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.login-link:hover {
+  color: #5a6fd8;
+  text-decoration: underline;
+}
+
+/* Pesan Error/Info */
+.login-message {
+  margin-top: 20px;
+}
+
+/* Untuk layar yang lebih kecil dari tablet (mobile) */
+@media (max-width: 768px) {
+  .login-wrapper {
+    padding: 25px; /* Sedikit kurangi padding di layar sangat kecil */
+  }
+  .login-card {
+    max-width: 100%; /* Di layar kecil, biarkan hampir penuh */
+  }
+}

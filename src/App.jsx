@@ -3,10 +3,11 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import HomePage from './pages/HomePage'; // Import HomePage
-import ProjectVocabPage from './pages/ProjectVocabPage'; // Akan kita buat
-import ProjectQuizPage from './pages/ProjectQuizPage'; // Akan kita buat
+import HomePage from './pages/HomePage';
+import ProjectVocabPage from './pages/ProjectVocabPage';
+import ProjectQuizPage from './pages/ProjectQuizPage';
 import ProtectedRoute from './components/ProtectedRoute';
+import SettingsPage from './pages/SettingsPage';
 import Navbar from './components/Navbar';
 
 // Komponen pembungkus untuk menampilkan Navbar bersamaan dengan halaman
@@ -19,7 +20,7 @@ function AppContent() {
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        
+
         {/* Rute yang dilindungi */}
         <Route
           path="/dashboard" // Rute baru untuk dashboard
@@ -42,6 +43,14 @@ function AppContent() {
           element={
             <ProtectedRoute>
               <ProjectQuizPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <SettingsPage />
             </ProtectedRoute>
           }
         />
