@@ -1,0 +1,170 @@
+/* src/styles/HomePage.css */
+
+/* Wrapper untuk seluruh halaman home */
+.home-page-wrapper {
+  min-height: 100vh;
+  background-color: #f8f9fa; /* Background abu-abu muda yang lebih lembut */
+  font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  padding: 40px 0;
+}
+
+/* Header */
+.home-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.home-header h1 {
+  color: #343a40;
+  font-weight: 700;
+}
+
+.home-header p {
+  color: #6c757d;
+  font-size: 1.1rem;
+}
+
+/* Form untuk membuat projek baru */
+.create-project-card {
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+  padding: 30px;
+  margin-bottom: 50px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.create-project-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.create-project-card .card-title {
+  color: #495057;
+  font-weight: 600;
+  margin-bottom: 25px;
+}
+
+.create-project-form .form-control {
+  border-radius: 10px;
+  border: 1px solid #e0e0e0;
+  padding: 12px 15px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.create-project-form .form-control:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.create-project-btn {
+  background-color: #667eea;
+  border-color: #667eea;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.create-project-btn:hover {
+  background-color: #5a6fd8;
+  transform: translateY(-2px);
+}
+
+/* Daftar Projek */
+.projects-section-title {
+  color: #343a40;
+  font-weight: 600;
+  margin-bottom: 30px;
+}
+
+.project-card {
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden; /* Untuk memastikan gambar tidak keluar dari card */
+}
+
+.project-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.project-card .card-body {
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.project-card .card-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #212529;
+  margin-bottom: 10px;
+}
+
+.project-card .card-text {
+  color: #6c757d;
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+  flex-grow: 1;
+}
+
+.project-card .btn-group-vertical .btn {
+  border-radius: 10px;
+  font-weight: 500;
+  margin-bottom: 10px;
+  transition: all 0.2s ease;
+}
+
+.project-card .btn-group-vertical .btn:last-child {
+  margin-bottom: 0;
+}
+
+.project-card .btn-outline-primary:hover {
+  background-color: #e7f1ff;
+}
+
+.project-card .btn-success:hover {
+  background-color: #218838;
+}
+
+.project-card .btn-group .btn {
+  border-radius: 0;
+  font-weight: 500;
+}
+
+.project-card .btn-group .btn:first-child {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.project-card .btn-group .btn:last-child {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+
+/* Tampilan "Empty State" */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.empty-state i {
+  font-size: 4rem;
+  color: #dee2e6;
+}
+
+.empty-state h3 {
+  color: #6c757d;
+  margin-top: 20px;
+}
+
+.empty-state p {
+  color: #adb5bd;
+}

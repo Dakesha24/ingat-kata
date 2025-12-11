@@ -1,4 +1,3 @@
-// src/pages/HomePage.jsx
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 import { Link } from 'react-router-dom';
@@ -15,10 +14,11 @@ function HomePage() {
   const [editingProjectId, setEditingProjectId] = useState(null);
   const [editingProjectName, setEditingProjectName] = useState('');
 
+  // --- PERBAIKAN: Ambil juga kolom total_wins ---
   const fetchProjects = async () => {
     const { data, error } = await supabase
       .from('projects')
-      .select('*')
+      .select('id, project_name, created_at, total_wins') // Tambahkan total_wins di sini
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -100,13 +100,11 @@ function HomePage() {
   return (
     <div className="container-fluid bg-light min-vh-100 py-5">
       <div className="container">
-        {/* Header */}
         <div className="text-center mb-5">
           <h1 className="display-5 fw-bold">Dashboard Projek Saya</h1>
           <p className="lead text-muted">Kelola kosakata Anda dalam satu tempat yang terorganisir.</p>
         </div>
 
-        {/* Form untuk membuat projek baru */}
         <div className="card shadow-sm mb-5">
           <div className="card-body p-4">
             <h5 className="card-title mb-4">
@@ -134,8 +132,7 @@ function HomePage() {
           </div>
         </div>
 
-        {/* Daftar Projek */}
-        <h4 className="mb-4">Daftar Projek Anda ({projects.length})</h4>
+        <h4>Daftar Projek Anda ({projects.length})</h4>
         {projects.length > 0 ? (
           <div className="row g-4">
             {projects.map((project) => (
@@ -155,6 +152,15 @@ function HomePage() {
                     ) : (
                       <h5 className="card-title">{project.project_name}</h5>
                     )}
+                    
+                    {/* --- TAMBAHKAN TAMPILAN TOTAL KEMENANGAN --- */}
+                    <p className="card-text text-success">
+                      <small>
+                        <i className="bi bi-trophy-fill me-1"></i>
+                        Total Menang: {project.total_wins || 0}
+                      </small>
+                    </p>
+
                     <p className="card-text text-muted flex-grow-1">
                       <small>Dibuat: {new Date(project.created_at).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}</small>
                     </p>

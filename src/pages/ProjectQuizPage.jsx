@@ -1,3 +1,4 @@
+// src/pages/ProjectQuizPage.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../supabaseClient';
 import { Link, useParams, useNavigate } from 'react-router-dom';
@@ -15,23 +16,21 @@ function ProjectQuizPage() {
   // State untuk antrian soal
   const [questionQueue, setQuestionQueue] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(null);
-  const [currentAnswer, setCurrentAnswer] = useState('');
-
-  // State baru untuk total soal
-  const [totalQuestions, setTotalQuestions] = useState(0);
+  const [currentAnswers, setCurrentAnswers] = useState([]); // Array untuk menyimpan semua jawaban benar
+  const [totalQuestionsAtStart, setTotalQuestionsAtStart] = useState(0);
 
   const [userAnswer, setUserAnswer] = useState('');
   const [score, setScore] = useState(0);
   const [message, setMessage] = useState('');
   const [gameWon, setGameWon] = useState(false);
   const [gameLost, setGameLost] = useState(false);
-  
+
   const [timeLeft, setTimeLeft] = useState(timerDuration);
   const intervalRef = useRef(null);
 
   const [loading, setLoading] = useState(true);
 
-  // Fungsi untuk mengambil data (tanpa max_score)
+  // Fungsi untuk mengambil data (tidak berubah)
   const fetchData = async () => {
     setLoading(true);
     const { data: projectData, error: projectError } = await supabase.from('projects').select('project_name').eq('id', projectId).single();
@@ -59,46 +58,50 @@ function ProjectQuizPage() {
     }
   }, [session, projectId]);
 
-  // --- FUNGSI BARU: Membuat antrian soal 2 kali ---
   const generateQuestionQueue = () => {
     if (vocabList.length === 0) return;
 
     let allQuestions = [];
-    vocabList.forEach(word => {
+    vocabList.forEach(wordItem => {
+      const engWords = wordItem.english_word;
+      const indoWords = wordItem.indonesian_meaning;
+
+      // Buat soal dari Bahasa Inggris ke Indonesia (tampilkan semua)
       allQuestions.push({
-        questionText: `${word.english_word}?`,
-        answer: word.indonesian_meaning.toLowerCase(),
+        questionText: `${engWords.join(', ')}?`,
+        correctAnswers: indoWords.map(word => word.toLowerCase()),
       });
+
+      // Buat soal dari Bahasa Indonesia ke Inggris (tampilkan semua)
       allQuestions.push({
-        questionText: `${word.indonesian_meaning}?`,
-        answer: word.english_word.toLowerCase(),
+        questionText: `${indoWords.join(', ')}?`,
+        correctAnswers: engWords.map(word => word.toLowerCase()),
       });
     });
 
-    // Buat salinan kedua dari daftar soal
-    const secondRound = [...allQuestions];
-    allQuestions = allQuestions.concat(secondRound);
+    const duplicatedQuestions = [...allQuestions, ...allQuestions];
 
-    // Acak seluruh daftar soal
-    for (let i = allQuestions.length - 1; i > 0; i--) {
+    // Acak seluruh daftar soal yang sudah digandakan
+    for (let i = duplicatedQuestions.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [allQuestions[i], allQuestions[j]] = [allQuestions[j], allQuestions[i]];
+      [duplicatedQuestions[i], duplicatedQuestions[j]] = [duplicatedQuestions[j], duplicatedQuestions[i]];
     }
-    
-    setQuestionQueue(allQuestions);
-    setTotalQuestions(allQuestions.length); // Tetapkan total soal
+
+    setQuestionQueue(duplicatedQuestions);
+    setTotalQuestionsAtStart(duplicatedQuestions.length);
   };
 
   const getNextQuestion = () => {
+    // Fungsi ini sekarang hanya bertugas mengambil soal berikutnya
     if (questionQueue.length === 0) {
       setGameWon(true);
-      setMessage(`SELAMAT! ANDA MENANG! 🎉 Anda telah menjawab semua soal. Skor Akhir: ${score}`);
+      setMessage(`Kuis selesai. Skor Akhir: ${score}.`);
       return;
     }
 
     const nextQuestion = questionQueue[0];
     setCurrentQuestion(nextQuestion.questionText);
-    setCurrentAnswer(nextQuestion.answer);
+    setCurrentAnswers(nextQuestion.correctAnswers);
     setUserAnswer('');
     setMessage('');
     setGameLost(false);
@@ -110,24 +113,39 @@ function ProjectQuizPage() {
   const handleSubmitAnswer = (e) => {
     e.preventDefault();
     if (!currentQuestion || !userAnswer) return;
-    
+
     clearInterval(intervalRef.current);
 
-    if (userAnswer.toLowerCase().trim() === currentAnswer) {
+    const userAnswersArray = userAnswer.split(',').map(answer => answer.trim().toLowerCase());
+    const isCorrect = userAnswersArray.some(userAns => currentAnswers.includes(userAns));
+
+    if (isCorrect) {
       const newScore = score + 1;
       setScore(newScore);
-      setMessage('Benar! 👍');
-      // Kondisi menang sekarang berdasarkan totalQuestions
-      if (newScore >= totalQuestions) {
+      const allCorrectAnswers = currentAnswers.join(', ');
+      setMessage(`Benar! 👍 Jawaban lengkapnya adalah: "${allCorrectAnswers}".`);
+
+      // --- KONDISI MENANG YANG BENAR DI SINI ---
+      if (newScore >= totalQuestionsAtStart) {
         setGameWon(true);
-        setMessage(`SELAMAT! ANDA MENANG! 🎉 Skor Akhir: ${newScore}`);
+        setMessage(`SELAMAT! ANDA MENANG! 🎉 Anda telah menjawab semua soal. Skor Akhir: ${newScore}`);
+
+        // --- TAMBAHKAN PEMANGGILAN RPC DI SINI ---
+        // Tambahkan kemenangan ke database
+        supabase.rpc('increment_project_wins', { project_id_to_increment: projectId })
+          .then(({ error }) => {
+            if (error) {
+              console.error('Error updating win count:', error);
+            }
+          });
       } else {
-        setTimeout(getNextQuestion, 1000);
+        setTimeout(getNextQuestion, 2000);
       }
     } else {
       setScore(0);
-      setMessage(`Salah! Jawaban yang benar adalah: "${currentAnswer}". Skor direset ke 0.`);
-      setTimeout(getNextQuestion, 3000);
+      const allCorrectAnswers = currentAnswers.join(', ');
+      setMessage(`Salah! Jawaban yang benar adalah: "${allCorrectAnswers}". Skor direset ke 0.`);
+      setTimeout(getNextQuestion, 4000);
     }
   };
 
@@ -137,9 +155,9 @@ function ProjectQuizPage() {
     setGameLost(false);
     setMessage('');
     generateQuestionQueue();
-    setTimeout(getNextQuestion, 100);
+    // setTimeout(getNextQuestion, 100);
   };
-  
+
   // Logika Timer (tidak berubah)
   useEffect(() => {
     if (currentQuestion && !gameWon && !gameLost) {
@@ -192,8 +210,7 @@ function ProjectQuizPage() {
           <h4 className="mb-0">Kuis: {projectName}</h4>
           <div>
             <span className="badge bg-danger fs-6 me-2"><i className="bi bi-clock me-1"></i> {timeLeft}s</span>
-            {/* Tampilan skor yang benar dan konsisten */}
-            <span className="badge bg-primary fs-6">Skor: {score} / {totalQuestions}</span>
+            <span className="badge bg-primary fs-6">Skor: {score} / {totalQuestionsAtStart}</span>
           </div>
         </div>
         <div className="card-body text-center">
